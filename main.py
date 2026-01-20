@@ -9,8 +9,8 @@ import arabic_reshaper
 from bidi.algorithm import get_display
 from fpdf import FPDF
 
-# --- 1. إعداد الصفحة والديزاين (Sentinel Cyber-UI) ---
-st.set_page_config(page_title="SENTINEL OSINT TERMINAL", layout="wide")
+# --- 1. إعدادات الثيم (Cyber-Sentinel UI) ---
+st.set_page_config(page_title="SENTINEL OSINT PRO", layout="wide")
 
 st.markdown("""
     <style>
@@ -27,7 +27,8 @@ st.markdown("""
         position: relative; overflow: hidden;
         animation: eyePulse 4s infinite ease-in-out;
     }
-    /* جفون أفقية (Horizontal Blink) */
+    
+    /* جفون أفقية (Horizontal Blink) - تسد من الجناب للوسط */
     .cyber-eye::before, .cyber-eye::after {
         content: ''; position: absolute; width: 0%; height: 100%;
         background: #050505; top: 0; z-index: 5;
@@ -36,42 +37,41 @@ st.markdown("""
     .cyber-eye::before { left: 0; border-right: 1px solid #00d4ff; }
     .cyber-eye::after { right: 0; border-left: 1px solid #00d4ff; }
 
-    @keyframes eyePulse { 0%, 100% { transform: rotate(45deg) scale(1); } 50% { transform: rotate(45deg) scale(1.1); } }
+    @keyframes eyePulse { 0%, 100% { transform: rotate(45deg) scale(1); } 50% { transform: rotate(45deg) scale(1.08); } }
     @keyframes horizontalBlink { 0%, 90%, 100% { width: 0%; } 95% { width: 55%; } }
 
-    .report-box { border: 1px solid #00d4ff; padding: 20px; background: rgba(0, 212, 255, 0.05); border-radius: 10px; }
-    .ads-box { background: rgba(255, 255, 255, 0.02); border: 1px dashed #333; text-align: center; padding: 10px; color: #444; margin: 10px 0; }
+    .report-box { border: 1px solid #00d4ff; padding: 25px; background: rgba(0, 212, 255, 0.05); border-radius: 12px; }
+    .ad-slot { background: rgba(255, 255, 255, 0.02); border: 1px dashed #333; text-align: center; padding: 15px; margin: 10px 0; color: #444; }
+    .trace-text { font-size: 10px; color: #00ff41; opacity: 0.8; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. قاموس جميع اللغات (Full Multilingual) ---
+# --- 2. قاموس اللغات العالمي (10+ لغات) ---
 LANG_MAP = {
-    "English": {"title": "SENTINEL OSINT TERMINAL", "up": "Drop Target Image", "scan": "RUN ANALYSIS", "rtl": False},
-    "Moroccan Darija": {"title": "سنتينل أوسينت تيرمينال", "up": "حط التصويرة هنا", "scan": "بدء التحليل", "rtl": True},
-    "Arabic": {"title": "محطة سنتينل للاستخبارات", "up": "تحديد الهدف البصري", "scan": "بدء المسح", "rtl": True},
-    "French": {"title": "TERMINAL SENTINEL", "up": "Charger la cible", "scan": "ANALYSER", "rtl": False},
+    "English": {"title": "SENTINEL OSINT TERMINAL", "up": "Drop Image", "scan": "RUN SCAN", "rtl": False},
+    "Moroccan Darija": {"title": "سنتينل أوسينت تيرمينال", "up": "حط التصويرة", "scan": "حلل الهدف", "rtl": True},
     "Spanish": {"title": "TERMINAL SENTINEL", "up": "Subir Imagen", "scan": "EJECUTAR", "rtl": False},
-    "German": {"title": "SENTINEL TERMINAL", "up": "Bild hochladen", "scan": "SCAN STARTEN", "rtl": False},
-    "Russian": {"title": "ТЕРМИНАЛ СЕНТИНЕЛЬ", "up": "Загрузить цель", "scan": "АНАЛИЗ", "rtl": False},
-    "Chinese": {"title": "哨兵 OSINT 終端", "up": "目標獲取", "scan": "執行掃描", "rtl": False},
-    "Japanese": {"title": "センチネル OSINT", "up": "ターゲット画像", "scan": "スキャン実行", "rtl": False},
+    "French": {"title": "SENTINEL OSINT", "up": "Charger Target", "scan": "ANALYSER", "rtl": False},
+    "Arabic": {"title": "محطة سنتينل للاستخبارات", "up": "رفع الصورة", "scan": "بدء التحليل", "rtl": True},
+    "Russian": {"title": "ТЕРМИНАЛ СЕНТИНЕЛЬ", "up": "Загрузить", "scan": "АНАЛИЗ", "rtl": False},
+    "Japanese": {"title": "センチネル OSINT", "up": "アップロード", "scan": "分析実行", "rtl": False},
     "Turkish": {"title": "SENTINEL TERMİNALİ", "up": "Resim Yükle", "scan": "ANALİZ ET", "rtl": False}
 }
 
-# --- 3. إعداد الـ AI (حل مشكل 404 و Indentation) ---
-#
+# --- 3. حل مشاكل الـ API والـ 404 ---
 AI_KEY = os.environ.get("AI_INTEGRATIONS_GEMINI_API_KEY")
 AI_URL = os.environ.get("AI_INTEGRATIONS_GEMINI_BASE_URL")
 
+# إعداد الكلاينت مع تصحيح الإصدار
 client = genai.Client(
     api_key=AI_KEY,
     http_options={'api_version': 'v1beta', 'base_url': AI_URL}
 )
 
-# --- 4. Sidebar (الأدوات الثلاثة + اللغات) ---
+# --- 4. Sidebar (الأدوات الثلاثة + Trace) ---
 with st.sidebar:
     st.markdown("### 🛠️ SYSTEM TOOLS")
-    # رجوع الأدوات الثلاثة
+    # رجوع الأدوات الثلاثة كيفما في التصويرة
     st.checkbox("✅ AI Deep Scan", value=True)
     st.checkbox("✅ EXIF Extraction", value=True)
     st.checkbox("✅ Geo-Triangulation", value=True)
@@ -82,42 +82,53 @@ with st.sidebar:
     st.button("💎 UPGRADE TO PRO")
     st.button("💰 Support Project (Crypto)")
     st.divider()
-    st.info("Uplink: SECURE\nNode: CLASSIFIED")
+    st.markdown("### 📡 DEEP WEB TRACE") #
+    st.markdown('<p class="trace-text">> Initializing Uplink...</p>', unsafe_allow_html=True)
+    st.markdown('<p class="trace-text">> Node: Classified-Alpha</p>', unsafe_allow_html=True)
+    st.markdown('<p class="trace-text">> Status: Operational</p>', unsafe_allow_html=True)
 
-# --- 5. الصفحة الرئيسية ---
-st.markdown("<div class='ads-box'>Google AdSense - Header Banner</div>", unsafe_allow_html=True)
+# --- 5. الواجهة الرئيسية ---
+st.markdown("<div class='ad-slot'>ADSENSE HEADER (728x90)</div>", unsafe_allow_html=True)
 
-# العين اللي كترمق أفقيًا وبدون ليزر
+# العين الأصلية (الجوهرة) برميش أفقي وبدون ليزر
 st.markdown('<div class="eye-container"><div class="cyber-eye"></div></div>', unsafe_allow_html=True)
-st.markdown(f'<h1 style="text-align: center; color: #00ff41 !important;">{i18n["title"]}</h1>', unsafe_allow_html=True)
+st.markdown(f'<h1 style="text-align: center; color:#00ff41 !important;">{i18n["title"]}</h1>', unsafe_allow_html=True)
 
-# التبويبات (Tabs)
+# نظام التبويبات (Signal, EXIF, Geo)
 tab1, tab2, tab3 = st.tabs(["📡 SIGNAL SCAN", "🔍 EXIF METADATA", "🌍 GEO-ORBIT"])
 
 with tab1:
-    col_input, col_info = st.columns([2, 1])
-    with col_input:
+    col_l, col_r = st.columns([2, 1])
+    with col_l:
         uploaded_file = st.file_uploader(i18n["up"], type=["jpg", "png", "jpeg"])
         if uploaded_file:
-            st.image(uploaded_file, caption="Target Acquired", width=500)
+            st.image(uploaded_file, caption="Target Identified", use_column_width=True)
             if st.button(i18n["scan"]):
-                with st.spinner("Analyzing signal..."):
+                with st.spinner("Decoding signal..."):
                     try:
-                        # تصحيح الموديل لـ gemini-1.5-flash لضمان الخدمة
+                        # تصحيح الموديل لـ gemini-1.5-flash لحل مشكل 404
                         response = client.models.generate_content(
                             model="gemini-1.5-flash",
-                            contents=[f"Provide a deep OSINT forensic report in {selected_lang}", uploaded_file]
+                            contents=[f"Professional OSINT report in {selected_lang}", uploaded_file]
                         )
                         report = response.text
                         if i18n["rtl"]:
                             report = get_display(arabic_reshaper.reshape(report))
                         st.markdown(f'<div class="report-box">{report}</div>', unsafe_allow_html=True)
                     except Exception as e:
-                        st.error(f"Error: {e}")
-    with col_info:
+                        st.error(f"Scan Failure: {e}")
+    with col_r:
         st.markdown("### 🧠 AI ANALYSIS")
-        st.info("Waiting for target input...")
-        st.markdown("<div class='ads-box' style='height:300px;'>AdSense Vertical Ad</div>", unsafe_allow_html=True)
+        st.info("Waiting for input...")
+        st.markdown("<div class='ad-slot' style='height:300px;'>ADSENSE SIDEBAR</div>", unsafe_allow_html=True)
 
-st.markdown("<div class='ads-box'>Google AdSense - Footer Banner</div>", unsafe_allow_html=True)
-st.caption("© 2026 Sentinel OSINT v2.5. Ready for AdSense.")
+with tab2:
+    st.markdown("### 🔍 RAW METADATA")
+    st.write("Upload an image in the Signal Scan tab to extract EXIF headers.")
+
+with tab3:
+    st.markdown("### 🌍 GEO-ORBIT")
+    st.warning("Spatial triangulation requires an active Pro license.")
+
+st.markdown("<div class='ad-slot'>ADSENSE FOOTER</div>", unsafe_allow_html=True)
+st.caption("© 2026 Sentinel OSINT v2.5. Ready for AdSense Monetization.")
