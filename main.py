@@ -7,7 +7,7 @@ import datetime
 from io import BytesIO
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
-from google import genai
+import google.generativeai as genai
 import arabic_reshaper
 from bidi.algorithm import get_display
 from fpdf import FPDF
