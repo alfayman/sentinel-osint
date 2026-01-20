@@ -270,15 +270,8 @@ if st.session_state.last_reset != datetime.date.today():
 AI_INTEGRATIONS_GEMINI_API_KEY = os.environ.get("AI_INTEGRATIONS_GEMINI_API_KEY")
 AI_INTEGRATIONS_GEMINI_BASE_URL = os.environ.get("AI_INTEGRATIONS_GEMINI_BASE_URL")
 
-# إعداد المفتاح (API Key)
 genai.configure(api_key=os.environ.get("AI_INTEGRATIONS_GEMINI_API_KEY"))
-
-# اختيار الموديل
 model = genai.GenerativeModel('gemini-pro')
-def create_pdf_report(metadata_text, report_text):
-    # fpdf2 is imported as FPDF from fpdf
-    pdf = FPDF()
-    pdf.add_page()
     
     # Add Unicode font support (DejaVuSans supports more Unicode)
     try:
