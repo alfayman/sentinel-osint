@@ -274,6 +274,7 @@ genai.configure(api_key=os.environ.get("AI_INTEGRATIONS_GEMINI_API_KEY"))
 model = genai.GenerativeModel('gemini-pro')
     
     # Add Unicode font support (DejaVuSans supports more Unicode)
+
     try:
         pdf.add_font("DejaVu", "", "fonts/DejaVuSans.ttf")
         pdf.add_font("DejaVu", "B", "fonts/DejaVuSans-Bold.ttf")
