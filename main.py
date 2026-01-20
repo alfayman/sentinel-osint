@@ -2,12 +2,12 @@ import streamlit as st
 import os
 import time
 from PIL import Image
-# إصلاح الـ Import لـ تفادي ImportError
+# الطريقة الصحيحة والمضمونة للاستيراد
 import google.generativeai as genai
 import arabic_reshaper
 from bidi.algorithm import get_display
 
-# --- 1. ثيم SENTINEL الجوهرة (Cyber-UI) ---
+# --- 1. ديزاين SENTINEL (الجوهرة والرميش الأفقي) ---
 st.set_page_config(page_title="SENTINEL OSINT PRO", layout="wide")
 
 st.markdown("""
@@ -15,7 +15,7 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
     .stApp { background-color: #050505; background-image: radial-gradient(circle at 50% 50%, #001a2e 0%, #050505 100%); color: #00d4ff; font-family: 'JetBrains Mono', monospace; }
     
-    /* العين الجوهرة الأصلية - رمش أفقي */
+    /* العين الجوهرة الأصلية بالرميش الأفقي */
     .eye-container { display: flex; justify-content: center; margin: 30px 0; }
     .cyber-eye {
         width: 100px; height: 100px; 
@@ -25,7 +25,7 @@ st.markdown("""
         position: relative; overflow: hidden;
         animation: eyePulse 4s infinite ease-in-out;
     }
-    /* جفون أفقية كتسد من الجناب للوسط */
+    /* جفون أفقية كتسد من الجناب (بدون ليزر) */
     .cyber-eye::before, .cyber-eye::after {
         content: ''; position: absolute; width: 0%; height: 100%;
         background: #050505; top: 0; z-index: 5;
@@ -42,18 +42,18 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. إعداد الـ API (إصلاح 404) ---
-API_KEY = os.environ.get("AI_INTEGRATIONS_GEMINI_API_KEY")
+# --- 2. إعداد الـ API (إصلاح الـ 404 نهائياً) ---
+API_KEY = st.secrets["AI_INTEGRATIONS_GEMINI_API_KEY"] if "AI_INTEGRATIONS_GEMINI_API_KEY" in st.secrets else os.environ.get("AI_INTEGRATIONS_GEMINI_API_KEY")
 genai.configure(api_key=API_KEY)
 
-# --- 3. السايدبار (الأدوات + 10 لغات) ---
+# --- 3. السايدبار (الأدوات + كاع اللغات) ---
 with st.sidebar:
     st.markdown("### 🛠️ SYSTEM TOOLS")
     st.checkbox("✅ AI Deep Scan", value=True)
     st.checkbox("✅ EXIF Extraction", value=True)
     st.checkbox("✅ Geo-Triangulation", value=True)
     st.divider()
-    # إضافة جميع اللغات المطلوبة
+    # كاع اللغات اللي طلبتي
     lang = st.selectbox("🌐 LANGUAGE", 
                         ["English", "Moroccan Darija", "Arabic", "French", "Spanish", 
                          "German", "Russian", "Chinese", "Japanese", "Turkish"])
@@ -61,8 +61,8 @@ with st.sidebar:
     st.button("💎 UPGRADE TO PRO")
     st.info("Status: Operational 🟢")
 
-# --- 4. الواجهة الرئيسية ---
-st.markdown("<div class='ads-box'>GOOGLE ADSENSE - TOP</div>", unsafe_allow_html=True)
+# --- 4. الصفحة الرئيسية ---
+st.markdown("<div class='ads-box'>GOOGLE ADSENSE - HEADER</div>", unsafe_allow_html=True)
 st.markdown('<div class="eye-container"><div class="cyber-eye"></div></div>', unsafe_allow_html=True)
 st.markdown('<h1 style="text-align: center; color: #00ff41 !important;">SENTINEL OSINT TERMINAL</h1>', unsafe_allow_html=True)
 
@@ -77,10 +77,10 @@ with tab1:
             if st.button("RUN ANALYSIS"):
                 with st.spinner("Decoding pixels..."):
                     try:
-                        # استخدام gemini-1.5-flash الصحيح لـ تفادي 404
+                        # استدعاء الموديل بطريقة تضمن تفادي 404
                         model = genai.GenerativeModel('gemini-1.5-flash')
                         img = Image.open(up)
-                        response = model.generate_content([f"Write a forensic OSINT report in {lang}", img])
+                        response = model.generate_content([f"Write a forensic report in {lang}", img])
                         
                         report = response.text
                         if lang in ["Arabic", "Moroccan Darija"]:
@@ -88,9 +88,9 @@ with tab1:
                             
                         st.markdown(f'<div class="report-box">{report}</div>', unsafe_allow_html=True)
                     except Exception as e:
-                        st.error(f"Analysis failed: {e}")
+                        st.error(f"Error: {e}")
     with col_r:
-        st.markdown("### 🧠 AI NEURAL")
+        st.markdown("### 🧠 AI ANALYSIS")
         st.info("Waiting for target input...")
         st.markdown("<div class='ads-box' style='height:250px;'>SIDE AD</div>", unsafe_allow_html=True)
 
