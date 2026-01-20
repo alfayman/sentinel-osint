@@ -9,111 +9,104 @@ import arabic_reshaper
 from bidi.algorithm import get_display
 from fpdf import FPDF
 
-# --- 1. ثيم Replit الاحترافي (Sentinel Dark Theme) ---
-st.set_page_config(page_title="SENTINEL OSINT PRO", layout="wide")
+# --- 1. إعداد الصفحة والديزاين "الشرير" (Sentinel Full UI) ---
+st.set_page_config(page_title="SENTINEL OSINT TERMINAL", layout="wide")
 
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
     .stApp { background-color: #050505; background-image: radial-gradient(circle at 50% 50%, #001a2e 0%, #050505 100%); color: #00d4ff; font-family: 'JetBrains Mono', monospace; }
-    h1, h2, h3, p, span, label { color: #00d4ff !important; text-shadow: 0 0 10px rgba(0, 212, 255, 0.5); }
-    .stButton > button { background: linear-gradient(45deg, #00d4ff, #005f73); color: white; border: none; font-weight: bold; width: 100%; box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3); }
-    .report-box { border: 1px solid #00d4ff; padding: 25px; background: rgba(0, 212, 255, 0.05); backdrop-filter: blur(10px); border-radius: 10px; }
-    .adsense-placeholder { background: rgba(255, 255, 255, 0.03); border: 1px dashed rgba(0, 212, 255, 0.1); color: #444; text-align: center; padding: 15px; margin: 15px 0; border-radius: 8px; }
     
-    /* Cyber Eye Animation (The Replit Soul) */
-    .cyber-eye-container { display: flex; justify-content: center; margin: 20px 0; }
-    .cyber-eye { width: 100px; height: 100px; background: radial-gradient(circle, #00d4ff 10%, #001a2e 100%); border-radius: 50% 0 50% 0; transform: rotate(45deg); border: 2px solid #00d4ff; animation: eyePulse 4s infinite; }
-    @keyframes eyePulse { 0%, 100% { transform: rotate(45deg) scale(1); box-shadow: 0 0 30px #00d4ff; } 50% { transform: rotate(45deg) scale(1.1); box-shadow: 0 0 50px #00d4ff; } }
+    /* Animation ديال العين الأسطورية */
+    .cyber-eye-container { display: flex; justify-content: center; margin: 20px 0; perspective: 1000px; }
+    .cyber-eye { width: 120px; height: 120px; background: radial-gradient(circle, #00d4ff 10%, #001a2e 50%, #050505 100%); border-radius: 50% 0 50% 0; transform: rotate(45deg); border: 2px solid #00d4ff; box-shadow: 0 0 30px #00d4ff; position: relative; overflow: hidden; animation: eyePulse 4s infinite ease-in-out; }
+    .cyber-eye::before { content: ''; position: absolute; top: 20%; left: 20%; width: 60%; height: 60%; background: radial-gradient(circle, #00d4ff 20%, transparent 70%); border-radius: 50%; animation: scanLine 2s infinite linear; }
+    .cyber-eye::after { content: ''; position: absolute; width: 100%; height: 2px; background: #00d4ff; top: 50%; box-shadow: 0 0 10px #00d4ff; animation: shutter 3s infinite alternate ease-in-out; }
+    
+    @keyframes eyePulse { 0%, 100% { transform: rotate(45deg) scale(1); } 50% { transform: rotate(45deg) scale(1.1); } }
+    @keyframes scanLine { 0% { transform: translateY(-60px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(60px); opacity: 0; } }
+    @keyframes shutter { 0% { height: 2px; top: 50%; } 100% { height: 60px; top: 20%; opacity: 0.2; } }
+
+    .report-box { border: 1px solid #00d4ff; padding: 20px; background: rgba(0, 212, 255, 0.05); border-radius: 10px; }
+    .ads-box { background: rgba(255, 255, 255, 0.02); border: 1px dashed #333; text-align: center; padding: 10px; border-radius: 5px; color: #444; margin: 10px 0; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. نظام اللغات (بما فيها الإسبانية) ---
+# --- 2. قاموس اللغات العالمي (All Languages) ---
 LANG_MAP = {
-    "English": {"title": "SENTINEL OSINT", "scan": "ANALYZE IMAGE", "rep": "Forensic Report", "up": "Drop Image", "credits": "Credits", "rtl": False},
-    "Spanish": {"title": "SENTINEL OSINT", "scan": "EJECUTAR ANÁLISIS", "rep": "Informe Forense", "up": "Subir Imagen", "credits": "Créditos", "rtl": False},
-    "Moroccan Darija": {"title": "سنتينل أوسينت", "scan": "حلل التصويرة", "rep": "تقرير جنائي", "up": "حط التصويرة", "credits": "الكريدي", "rtl": True},
-    "Arabic": {"title": "سنتينل للتحليل", "scan": "بدء التحليل", "rep": "تقرير استخباراتي", "up": "رفع الصورة", "credits": "الرصيد", "rtl": True},
-    "French": {"title": "SENTINEL PRO", "scan": "ANALYSER", "rep": "Rapport", "up": "Charger", "credits": "Crédits", "rtl": False}
+    "English": {"title": "SENTINEL OSINT TERMINAL", "up": "Target Acquisition", "scan": "RUN NEURAL SCAN", "rtl": False},
+    "Moroccan Darija": {"title": "سنتينل أوسينت تيرمينال", "up": "حط الهدف هنا", "scan": "بدء المسح العصبي", "rtl": True},
+    "Spanish": {"title": "TERMINAL SENTINEL", "up": "Adquisición de Objetivo", "scan": "EJECUTAR ESCANEO", "rtl": False},
+    "French": {"title": "TERMINAL SENTINEL", "up": "Acquisition de la Cible", "scan": "LANCER LE SCAN", "rtl": False},
+    "German": {"title": "SENTINEL TERMINAL", "up": "Zielerfassung", "scan": "SCAN STARTEN", "rtl": False},
+    "Russian": {"title": "ТЕРМИНАЛ СЕНТИНЕЛЬ", "up": "Захват цели", "scan": "ЗАПУСТИТЬ СКАНИРОВАНИЕ", "rtl": False},
+    "Chinese": {"title": "哨兵 OSINT 終端", "up": "目標獲取", "scan": "執行掃描", "rtl": False},
+    "Arabic": {"title": "محطة سنتينل الاستخباراتية", "up": "تحديد الهدف", "scan": "بدء المسح الضوئي", "rtl": True}
 }
 
-# --- 3. إعداد الـ AI (Gemini 1.5 Flash) ---
+# --- 3. إعداد الـ AI ---
 API_KEY = os.environ.get("AI_INTEGRATIONS_GEMINI_API_KEY")
 if API_KEY:
     genai.configure(api_key=API_KEY)
     model = genai.GenerativeModel('gemini-1.5-flash')
 else:
-    st.error("⚠️ AI Key Missing!")
+    st.error("⚠️ Missing API Key!")
 
-# --- 4. نظام الـ Credits والـ Reset ---
-if 'credits' not in st.session_state: st.session_state.credits = 3
-if 'last_reset' not in st.session_state: st.session_state.last_reset = datetime.date.today()
-if st.session_state.last_reset != datetime.date.today():
-    st.session_state.credits = 3
-    st.session_state.last_reset = datetime.date.today()
+# --- 4. واجهة المستخدم (Sidebar & Tools) ---
+st.sidebar.markdown("### 🛠️ SYSTEM TOOLS")
+tool1 = st.sidebar.checkbox("✅ AI Deep Scan", value=True)
+tool2 = st.sidebar.checkbox("✅ EXIF Extraction", value=True)
+tool3 = st.sidebar.checkbox("✅ Geo-Triangulation", value=True)
 
-# --- 5. الواجهة الرئيسية ---
-selected_lang = st.sidebar.selectbox("🌐 Language", list(LANG_MAP.keys()))
+st.sidebar.divider()
+selected_lang = st.sidebar.selectbox("🌐 LANGUAGE / لغة", list(LANG_MAP.keys()))
 i18n = LANG_MAP[selected_lang]
 
-# AdSense Header
-st.markdown("<div class='adsense-placeholder'>Google AdSense - Header Banner (728x90)</div>", unsafe_allow_html=True)
+st.sidebar.button("💎 UPGRADE TO PRO")
+st.sidebar.button("💰 Support (Crypto)")
 
-# Replit Cyber Eye Logo
+# --- 5. الصفحة الرئيسية ---
+st.markdown("<div class='ads-box'>Google AdSense - Header Banner</div>", unsafe_allow_html=True)
+
+# العين اللي كتحرك وتغمض
 st.markdown('<div class="cyber-eye-container"><div class="cyber-eye"></div></div>', unsafe_allow_html=True)
-st.markdown(f'<h1 style="text-align: center;">{i18n["title"]}</h1>', unsafe_allow_html=True)
-st.markdown(f'<p style="text-align: center; opacity: 0.7;">{i18n["credits"]}: {st.session_state.credits}/3</p>', unsafe_allow_html=True)
+st.markdown(f'<h1 style="text-align: center; color: #00ff41 !important;">{i18n["title"]}</h1>', unsafe_allow_html=True)
 
-col1, col2 = st.columns([3, 1])
+# التبويبات (Tabs) كيفما في Replit
+tab1, tab2, tab3 = st.tabs(["📡 SIGNAL SCAN", "🔍 EXIF METADATA", "🌍 GEO-ORBIT"])
 
-with col1:
-    uploaded_file = st.file_uploader(i18n["up"], type=["jpg", "jpeg", "png"])
-    if uploaded_file:
-        st.image(uploaded_file, caption="Target Image", width=500)
-        
-        if st.button(i18n["scan"]):
-            if st.session_state.credits > 0:
-                with st.spinner("Decoding pixels..."):
+with tab1:
+    col_a, col_b = st.columns([2, 1])
+    with col_a:
+        uploaded_file = st.file_uploader(i18n["up"], type=["jpg", "png", "jpeg"])
+        if uploaded_file:
+            st.image(uploaded_file, width=500)
+            if st.button(i18n["scan"]):
+                with st.spinner("Decrypting pixels..."):
                     try:
                         img = Image.open(uploaded_file)
-                        prompt = f"Perform a professional OSINT analysis. Report in {selected_lang}."
-                        response = model.generate_content([img, prompt])
+                        response = model.generate_content([img, f"Analyze this as an OSINT expert. Language: {selected_lang}"])
                         
-                        st.session_state.credits -= 1
-                        st.success("SCAN COMPLETE")
-                        
-                        report_text = response.text
+                        report = response.text
                         if i18n["rtl"]:
-                            reshaped = arabic_reshaper.reshape(report_text)
-                            report_text = get_display(reshaped)
+                            reshaped = arabic_reshaper.reshape(report)
+                            report = get_display(reshaped)
                         
-                        st.markdown(f"### 🕵️ {i18n['rep']}")
-                        st.markdown(f'<div class="report-box">{report_text}</div>', unsafe_allow_html=True)
-                        
-                        # PDF Download
-                        pdf = FPDF()
-                        pdf.add_page()
-                        pdf.set_font("Arial", size=12)
-                        pdf.multi_cell(0, 10, txt=response.text.encode('latin-1', 'ignore').decode('latin-1'))
-                        st.download_button("📥 DOWNLOAD PDF", pdf.output(dest='S').encode('latin-1'), "report.pdf")
+                        st.markdown(f'<div class="report-box">{report}</div>', unsafe_allow_html=True)
                     except Exception as e:
                         st.error(f"Error: {e}")
-            else:
-                st.error("CREDIT LIMIT REACHED. Upgrade to Pro.")
+    with col_b:
+        st.markdown("### 🧠 AI NEURAL ANALYSIS")
+        st.info("Waiting for target input...")
+        st.markdown("<div class='ads-box' style='height: 300px;'>AdSense - Vertical</div>", unsafe_allow_html=True)
 
-with col2:
-    st.sidebar.markdown("### 🔐 PRO FEATURES")
-    st.sidebar.checkbox("Batch Scan", disabled=True)
-    st.sidebar.checkbox("Deep Geo-Location", disabled=True)
-    st.sidebar.button("🚀 UPGRADE TO PRO")
-    
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("### 🌍 NETWORK TRACE")
-    st.sidebar.code("Uplink: SECURE\nNode: CLASSIFIED\nEncryption: AES-256")
-    
-    # AdSense Sidebar
-    st.markdown("<div class='adsense-placeholder' style='height: 400px;'>AdSense - Vertical Skyscraper</div>", unsafe_allow_html=True)
+with tab2:
+    st.markdown("### 🔍 Metadata Extraction")
+    st.write("Upload an image in Signal Scan to see EXIF data.")
 
-# Footer
-st.markdown("<div class='adsense-placeholder'>Google AdSense - Footer Banner</div>", unsafe_allow_html=True)
-st.caption("© 2026 Sentinel OSINT. Ready for Ads & Monetization.")
+with tab3:
+    st.markdown("### 🌍 Geospatial Orbit")
+    st.warning("Deep Triangulation requires Pro License.")
+
+st.markdown("<div class='ads-box'>Google AdSense - Footer Banner</div>", unsafe_allow_html=True)
+st.caption("© 2026 Sentinel OSINT v2.5. Ready for AdSense.")
