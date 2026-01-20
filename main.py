@@ -2,12 +2,12 @@ import streamlit as st
 import os
 import time
 from PIL import Image
-# إصلاح الـ Import بـ الطريقة الرسمية لتفادي خطأ ImportError
+# إصلاح الـ Import لـ تفادي ImportError
 import google.generativeai as genai
 import arabic_reshaper
 from bidi.algorithm import get_display
 
-# --- 1. إعداد الثيم (Cyber-Sentinel UI) ---
+# --- 1. ثيم SENTINEL الجوهرة (Cyber-UI) ---
 st.set_page_config(page_title="SENTINEL OSINT PRO", layout="wide")
 
 st.markdown("""
@@ -15,7 +15,7 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
     .stApp { background-color: #050505; background-image: radial-gradient(circle at 50% 50%, #001a2e 0%, #050505 100%); color: #00d4ff; font-family: 'JetBrains Mono', monospace; }
     
-    /* أنيمايشن العين الجوهرة الأصلية - رمش أفقي نقي وبدون ليزر */
+    /* العين الجوهرة الأصلية - رمش أفقي */
     .eye-container { display: flex; justify-content: center; margin: 30px 0; }
     .cyber-eye {
         width: 100px; height: 100px; 
@@ -25,8 +25,7 @@ st.markdown("""
         position: relative; overflow: hidden;
         animation: eyePulse 4s infinite ease-in-out;
     }
-    
-    /* جفون أفقية (Horizontal Blink) كيتسدوا من اليمين واليسار */
+    /* جفون أفقية كتسد من الجناب للوسط */
     .cyber-eye::before, .cyber-eye::after {
         content: ''; position: absolute; width: 0%; height: 100%;
         background: #050505; top: 0; z-index: 5;
@@ -39,15 +38,15 @@ st.markdown("""
     @keyframes horizontalBlink { 0%, 90%, 100% { width: 0%; } 95% { width: 55%; } }
 
     .report-box { border: 1px solid #00d4ff; padding: 25px; background: rgba(0, 212, 255, 0.05); border-radius: 12px; }
-    .ads-box { background: rgba(255, 255, 255, 0.02); border: 1px dashed #333; text-align: center; padding: 15px; margin: 10px 0; color: #444; }
+    .ads-box { background: rgba(255, 255, 255, 0.02); border: 1px dashed #333; text-align: center; padding: 15px; color: #444; margin: 10px 0; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. إعداد الـ API (إصلاح 404 بـ الموديل الصحيح) ---
+# --- 2. إعداد الـ API (إصلاح 404) ---
 API_KEY = os.environ.get("AI_INTEGRATIONS_GEMINI_API_KEY")
 genai.configure(api_key=API_KEY)
 
-# --- 3. السايدبار (الأدوات + كاع اللغات) ---
+# --- 3. السايدبار (الأدوات + 10 لغات) ---
 with st.sidebar:
     st.markdown("### 🛠️ SYSTEM TOOLS")
     st.checkbox("✅ AI Deep Scan", value=True)
@@ -55,7 +54,7 @@ with st.sidebar:
     st.checkbox("✅ Geo-Triangulation", value=True)
     st.divider()
     # إضافة جميع اللغات المطلوبة
-    lang = st.selectbox("🌐 LANGUAGE / اللغة", 
+    lang = st.selectbox("🌐 LANGUAGE", 
                         ["English", "Moroccan Darija", "Arabic", "French", "Spanish", 
                          "German", "Russian", "Chinese", "Japanese", "Turkish"])
     st.divider()
@@ -63,13 +62,10 @@ with st.sidebar:
     st.info("Status: Operational 🟢")
 
 # --- 4. الواجهة الرئيسية ---
-st.markdown("<div class='ads-box'>GOOGLE ADSENSE - TOP BANNER</div>", unsafe_allow_html=True)
-
-# العين الجوهرة الأصلية بالرمش الأفقي
+st.markdown("<div class='ads-box'>GOOGLE ADSENSE - TOP</div>", unsafe_allow_html=True)
 st.markdown('<div class="eye-container"><div class="cyber-eye"></div></div>', unsafe_allow_html=True)
 st.markdown('<h1 style="text-align: center; color: #00ff41 !important;">SENTINEL OSINT TERMINAL</h1>', unsafe_allow_html=True)
 
-# نظام التبويبات (Tabs)
 tab1, tab2, tab3 = st.tabs(["📡 SIGNAL SCAN", "🔍 EXIF METADATA", "🌍 GEO-ORBIT"])
 
 with tab1:
@@ -79,12 +75,12 @@ with tab1:
         if up:
             st.image(up, width=500)
             if st.button("RUN ANALYSIS"):
-                with st.spinner("Analyzing signal..."):
+                with st.spinner("Decoding pixels..."):
                     try:
-                        # اختيار موديل gemini-1.5-flash لحل مشكلة الـ 404
+                        # استخدام gemini-1.5-flash الصحيح لـ تفادي 404
                         model = genai.GenerativeModel('gemini-1.5-flash')
                         img = Image.open(up)
-                        response = model.generate_content([f"Write a forensic report in {lang}", img])
+                        response = model.generate_content([f"Write a forensic OSINT report in {lang}", img])
                         
                         report = response.text
                         if lang in ["Arabic", "Moroccan Darija"]:
@@ -94,9 +90,9 @@ with tab1:
                     except Exception as e:
                         st.error(f"Analysis failed: {e}")
     with col_r:
-        st.markdown("### 🧠 AI ANALYSIS")
+        st.markdown("### 🧠 AI NEURAL")
         st.info("Waiting for target input...")
-        st.markdown("<div class='ads-box' style='height:250px;'>VERTICAL AD</div>", unsafe_allow_html=True)
+        st.markdown("<div class='ads-box' style='height:250px;'>SIDE AD</div>", unsafe_allow_html=True)
 
 st.markdown("<div class='ads-box'>GOOGLE ADSENSE - FOOTER</div>", unsafe_allow_html=True)
 st.caption("© 2026 Sentinel OSINT v2.5. Ready for Monetization.")
