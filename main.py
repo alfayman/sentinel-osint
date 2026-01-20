@@ -15,7 +15,7 @@ API_KEY = os.environ.get("AI_INTEGRATIONS_GEMINI_API_KEY")
 
 if API_KEY:
     genai.configure(api_key=API_KEY)
-    model = genai.GenerativeModel('gemini-pro')
+   model = genai.GenerativeModel('gemini-1.5-flash')
 else:
     st.warning("Please add AI_INTEGRATIONS_GEMINI_API_KEY to Secrets.")
 
@@ -34,7 +34,7 @@ if uploaded_file:
             st.error("API Key missing!")
         else:
             try:
-                response = model.generate_content(["Perform forensic analysis on this image:", image])
+                response = model.generate_content([image, "Perform a detailed forensic analysis on this image."])
                 st.markdown("### Analysis Results:")
                 st.write(response.text)
             except Exception as e:
